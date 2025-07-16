@@ -47,6 +47,6 @@ export default createConfig({
   },
   database: {
     kind: "postgres",
-    connectionString: "postgresql://postgres:jDDOzUGglWnPraqpzLDjcnkBDglasjqn@crossover.proxy.rlwy.net:21467/railway",
+    connectionString: "",
   }
 });
