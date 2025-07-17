@@ -75,10 +75,24 @@ app.get("/models", async (c) => {
     results.map(async (modelData) => {
       const modelId = modelData.id;
 
-      const reviews = await db.select()
+      const reviewsData = await db.select()
         .from(review)
         .where(eq(review.modelId, modelId))
         .orderBy(desc(review.timestamp));
+
+      const reviews = await Promise.all(
+        reviewsData.map(async (reviewData) => {
+          const reviewer = await db.select()
+            .from(user)
+            .where(eq(user.address, reviewData.reviewer))
+            .limit(1);
+
+          return {
+            ...reviewData,
+            reviewer: reviewer[0] || null
+          };
+        })
+      );
 
       const proposals = await db.select()
         .from(proposal)
@@ -90,11 +104,17 @@ app.get("/models", async (c) => {
         .where(eq(modelStats.id, modelId))
         .limit(1);
 
+      const submitter = await db.select()
+        .from(user)
+        .where(eq(user.address, modelData.submitter))
+        .limit(1);
+
       return {
         ...modelData,
         reviews: reviews,
         proposals: proposals,
-        stats: stats[0] || {}
+        stats: stats[0] || {},
+        submitter: submitter[0] || null
       };
     })
   );
@@ -117,10 +137,26 @@ app.get("/models/:id", async (c) => {
     return c.json({ error: "Model not found" }, 404);
   }
 
-  const reviews = await db.select()
+  const modelRecord = modelData[0]!;
+
+  const reviewsData = await db.select()
     .from(review)
     .where(eq(review.modelId, modelId))
     .orderBy(desc(review.timestamp));
+
+  const reviews = await Promise.all(
+    reviewsData.map(async (reviewData) => {
+      const reviewer = await db.select()
+        .from(user)
+        .where(eq(user.address, reviewData.reviewer))
+        .limit(1);
+
+      return {
+        ...reviewData,
+        reviewer: reviewer[0] || null
+      };
+    })
+  );
 
   const proposals = await db.select()
     .from(proposal)
@@ -132,11 +168,17 @@ app.get("/models/:id", async (c) => {
     .where(eq(modelStats.id, modelId))
     .limit(1);
 
+  const submitter = await db.select()
+    .from(user)
+    .where(eq(user.address, modelRecord.submitter))
+    .limit(1);
+
   return c.json({
-    model: serializeBigInts(modelData[0]),
+    model: serializeBigInts(modelRecord),
     reviews: serializeBigInts(reviews),
     proposals: serializeBigInts(proposals),
-    stats: serializeBigInts(stats[0] || {})
+    stats: serializeBigInts(stats[0] || {}),
+    submitter: serializeBigInts(submitter[0] || null)
   });
 });
 
@@ -156,8 +198,22 @@ app.get("/models/:id/reviews", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  const reviewsWithUsers = await Promise.all(
+    results.map(async (reviewData) => {
+      const reviewer = await db.select()
+        .from(user)
+        .where(eq(user.address, reviewData.reviewer))
+        .limit(1);
+
+      return {
+        ...reviewData,
+        reviewer: reviewer[0] || null
+      };
+    })
+  );
+
   return c.json({
-    reviews: serializeBigInts(results),
+    reviews: serializeBigInts(reviewsWithUsers),
     pagination: { limit, offset }
   });
 });
@@ -185,8 +241,22 @@ app.get("/reviews", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  const reviewsWithUsers = await Promise.all(
+    results.map(async (reviewData) => {
+      const reviewer = await db.select()
+        .from(user)
+        .where(eq(user.address, reviewData.reviewer))
+        .limit(1);
+
+      return {
+        ...reviewData,
+        reviewer: reviewer[0] || null
+      };
+    })
+  );
+
   return c.json({
-    reviews: serializeBigInts(results),
+    reviews: serializeBigInts(reviewsWithUsers),
     pagination: { limit, offset }
   });
 });
@@ -232,10 +302,24 @@ app.get("/proposals/:id", async (c) => {
     return c.json({ error: "Proposal not found" }, 404);
   }
 
-  const votes = await db.select()
+  const votesData = await db.select()
     .from(vote)
     .where(eq(vote.proposalId, proposalId))
     .orderBy(desc(vote.timestamp));
+
+  const votes = await Promise.all(
+    votesData.map(async (voteData) => {
+      const voter = await db.select()
+        .from(user)
+        .where(eq(user.address, voteData.voter))
+        .limit(1);
+
+      return {
+        ...voteData,
+        voter: voter[0] || null
+      };
+    })
+  );
 
   const stats = await db.select()
     .from(proposalStats)
@@ -265,8 +349,22 @@ app.get("/proposals/:id/votes", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  const votesWithUsers = await Promise.all(
+    results.map(async (voteData) => {
+      const voter = await db.select()
+        .from(user)
+        .where(eq(user.address, voteData.voter))
+        .limit(1);
+
+      return {
+        ...voteData,
+        voter: voter[0] || null
+      };
+    })
+  );
+
   return c.json({
-    votes: serializeBigInts(results),
+    votes: serializeBigInts(votesWithUsers),
     pagination: { limit, offset }
   });
 });
