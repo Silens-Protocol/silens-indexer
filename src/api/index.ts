@@ -51,11 +51,11 @@ app.get("/models", async (c) => {
   const submitter = c.req.query("submitter");
   const includeRelated = c.req.query("includeRelated") === "true";
 
-  const conditions = [];
+  const conditions = [gte(model.id, BigInt(7))];
   if (status !== undefined) conditions.push(eq(model.status, parseInt(status)));
   if (submitter) conditions.push(eq(model.submitter, submitter as `0x${string}`));
   
-  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+  const whereClause = and(...conditions);
   
   const results = await db.select()
     .from(model)
