@@ -4,10 +4,10 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "pnpm start --schema $RAILWAY_DEPLOYMENT_ID",
+    "startCommand": "pnpm start --schema public",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
-} 
+}
