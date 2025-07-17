@@ -47,7 +47,7 @@ export const model = onchainTable("model", (t) => ({
 }));
 
 export const review = onchainTable("review", (t) => ({
-  id: t.bigint().primaryKey(),
+  id: t.text().primaryKey(),
   modelId: t.bigint().notNull(),
   reviewer: t.hex().notNull(),
   ipfsHash: t.text().notNull(),
@@ -93,7 +93,7 @@ export const proposal = onchainTable("proposal", (t) => ({
 }));
 
 export const vote = onchainTable("vote", (t) => ({
-  id: t.bigint().primaryKey(),
+  id: t.text().primaryKey(),
   proposalId: t.bigint().notNull(),
   voter: t.hex().notNull(),
   support: t.boolean().notNull(),
@@ -127,7 +127,7 @@ export const user = onchainTable("user", (t) => ({
 }));
 
 export const badge = onchainTable("badge", (t) => ({
-  id: t.bigint().primaryKey(),
+  id: t.text().primaryKey(),
   userId: t.hex().notNull(),
   badgeId: t.integer().notNull(),
   badgeName: t.text().notNull(),
@@ -157,7 +157,7 @@ export const identity = onchainTable("identity", (t) => ({
 }));
 
 export const platformVerification = onchainTable("platform_verification", (t) => ({
-  id: t.bigint().primaryKey(),
+  id: t.text().primaryKey(),
   tokenId: t.bigint().notNull(),
   platform: t.text().notNull(),
   username: t.text().notNull(),
@@ -175,7 +175,7 @@ export const platformVerification = onchainTable("platform_verification", (t) =>
 }));
 
 export const reputationHistory = onchainTable("reputation_history", (t) => ({
-  id: t.bigint().primaryKey(),
+  id: t.text().primaryKey(),
   userId: t.hex().notNull(),
   newScore: t.integer().notNull(),
   pointsAdded: t.integer().notNull(),

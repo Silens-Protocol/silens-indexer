@@ -49,6 +49,7 @@ app.get("/models", async (c) => {
   const offset = parseInt(c.req.query("offset") || "0");
   const status = c.req.query("status");
   const submitter = c.req.query("submitter");
+  const includeRelated = c.req.query("includeRelated") === "true";
 
   const conditions = [];
   if (status !== undefined) conditions.push(eq(model.status, parseInt(status)));
@@ -63,8 +64,43 @@ app.get("/models", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  if (!includeRelated) {
+    return c.json({
+      models: serializeBigInts(results),
+      pagination: { limit, offset }
+    });
+  }
+
+  const modelsWithRelated = await Promise.all(
+    results.map(async (modelData) => {
+      const modelId = modelData.id;
+
+      const reviews = await db.select()
+        .from(review)
+        .where(eq(review.modelId, modelId))
+        .orderBy(desc(review.timestamp));
+
+      const proposals = await db.select()
+        .from(proposal)
+        .where(eq(proposal.modelId, modelId))
+        .orderBy(desc(proposal.createdAt));
+
+      const stats = await db.select()
+        .from(modelStats)
+        .where(eq(modelStats.id, modelId))
+        .limit(1);
+
+      return {
+        ...modelData,
+        reviews: reviews,
+        proposals: proposals,
+        stats: stats[0] || {}
+      };
+    })
+  );
+
   return c.json({
-    models: serializeBigInts(results),
+    models: serializeBigInts(modelsWithRelated),
     pagination: { limit, offset }
   });
 });

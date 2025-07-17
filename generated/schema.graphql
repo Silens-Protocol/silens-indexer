@@ -19,21 +19,21 @@ type Meta {
 type Query {
   model(id: BigInt!): model
   models(where: modelFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): modelPage!
-  review(id: BigInt!): review
+  review(id: String!): review
   reviews(where: reviewFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): reviewPage!
   proposal(id: BigInt!): proposal
   proposals(where: proposalFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): proposalPage!
-  vote(id: BigInt!): vote
+  vote(id: String!): vote
   votes(where: voteFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): votePage!
   user(address: String!): user
   users(where: userFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): userPage!
-  badge(id: BigInt!): badge
+  badge(id: String!): badge
   badges(where: badgeFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): badgePage!
   identity(tokenId: BigInt!): identity
   identitys(where: identityFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): identityPage!
-  platformVerification(id: BigInt!): platformVerification
+  platformVerification(id: String!): platformVerification
   platformVerifications(where: platformVerificationFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): platformVerificationPage!
-  reputationHistory(id: BigInt!): reputationHistory
+  reputationHistory(id: String!): reputationHistory
   reputationHistorys(where: reputationHistoryFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): reputationHistoryPage!
   userStats(address: String!): userStats
   userStatss(where: userStatsFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): userStatsPage!
@@ -175,7 +175,7 @@ input modelFilter {
 }
 
 type review {
-  id: BigInt!
+  id: String!
   modelId: BigInt!
   reviewer: String!
   ipfsHash: String!
@@ -195,14 +195,16 @@ type reviewPage {
 input reviewFilter {
   AND: [reviewFilter]
   OR: [reviewFilter]
-  id: BigInt
-  id_not: BigInt
-  id_in: [BigInt]
-  id_not_in: [BigInt]
-  id_gt: BigInt
-  id_lt: BigInt
-  id_gte: BigInt
-  id_lte: BigInt
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
   modelId: BigInt
   modelId_not: BigInt
   modelId_in: [BigInt]
@@ -453,7 +455,7 @@ input proposalFilter {
 }
 
 type vote {
-  id: BigInt!
+  id: String!
   proposalId: BigInt!
   voter: String!
   support: Boolean!
@@ -474,14 +476,16 @@ type votePage {
 input voteFilter {
   AND: [voteFilter]
   OR: [voteFilter]
-  id: BigInt
-  id_not: BigInt
-  id_in: [BigInt]
-  id_not_in: [BigInt]
-  id_gt: BigInt
-  id_lt: BigInt
-  id_gte: BigInt
-  id_lte: BigInt
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
   proposalId: BigInt
   proposalId_not: BigInt
   proposalId_in: [BigInt]
@@ -669,7 +673,7 @@ input userFilter {
 }
 
 type badge {
-  id: BigInt!
+  id: String!
   userId: String!
   badgeId: Int!
   badgeName: String!
@@ -689,14 +693,16 @@ type badgePage {
 input badgeFilter {
   AND: [badgeFilter]
   OR: [badgeFilter]
-  id: BigInt
-  id_not: BigInt
-  id_in: [BigInt]
-  id_not_in: [BigInt]
-  id_gt: BigInt
-  id_lt: BigInt
-  id_gte: BigInt
-  id_lte: BigInt
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
   userId: String
   userId_not: String
   userId_in: [String]
@@ -862,7 +868,7 @@ input identityFilter {
 }
 
 type platformVerification {
-  id: BigInt!
+  id: String!
   tokenId: BigInt!
   platform: String!
   username: String!
@@ -883,14 +889,16 @@ type platformVerificationPage {
 input platformVerificationFilter {
   AND: [platformVerificationFilter]
   OR: [platformVerificationFilter]
-  id: BigInt
-  id_not: BigInt
-  id_in: [BigInt]
-  id_not_in: [BigInt]
-  id_gt: BigInt
-  id_lt: BigInt
-  id_gte: BigInt
-  id_lte: BigInt
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
   tokenId: BigInt
   tokenId_not: BigInt
   tokenId_in: [BigInt]
@@ -974,7 +982,7 @@ input platformVerificationFilter {
 }
 
 type reputationHistory {
-  id: BigInt!
+  id: String!
   userId: String!
   newScore: Int!
   pointsAdded: Int!
@@ -993,14 +1001,16 @@ type reputationHistoryPage {
 input reputationHistoryFilter {
   AND: [reputationHistoryFilter]
   OR: [reputationHistoryFilter]
-  id: BigInt
-  id_not: BigInt
-  id_in: [BigInt]
-  id_not_in: [BigInt]
-  id_gt: BigInt
-  id_lt: BigInt
-  id_gte: BigInt
-  id_lte: BigInt
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
   userId: String
   userId_not: String
   userId_in: [String]

@@ -14,6 +14,7 @@ import {
   proposalStats,
   globalStats,
 } from "ponder:schema";
+import { randomUUID } from "crypto";
 
 // ==================== SilensModelRegistry Events ====================
 
@@ -95,7 +96,7 @@ ponder.on("SilensModel:ReviewSubmitted", async ({ event, context }) => {
   await context.db
     .insert(review)
     .values({
-      id: BigInt(event.log.logIndex),
+      id: randomUUID(),
       modelId,
       reviewer,
       ipfsHash,
@@ -264,7 +265,7 @@ ponder.on("SilensProposal:VoteCast", async ({ event, context }) => {
   await context.db
     .insert(vote)
     .values({
-      id: BigInt(event.log.logIndex),
+      id: randomUUID(),
       proposalId,
       voter,
       support,
@@ -377,7 +378,7 @@ ponder.on("SilensReputation:ReputationUpdated", async ({ event, context }) => {
   await context.db
     .insert(reputationHistory)
     .values({
-      id: BigInt(event.log.logIndex),
+      id: randomUUID(),
       userId,
       newScore: Number(newScore),
       pointsAdded: Number(pointsAdded),
@@ -432,7 +433,7 @@ ponder.on("SilensReputation:BadgeAwarded", async ({ event, context }) => {
   await context.db
     .insert(badge)
     .values({
-      id: BigInt(event.log.logIndex),
+      id: randomUUID(),
       userId,
       badgeId: Number(badgeId),
       badgeName,
@@ -548,7 +549,7 @@ ponder.on("SilensIdentityRegistry:PlatformVerified", async ({ event, context }) 
   await context.db
     .insert(platformVerification)
     .values({
-      id: BigInt(event.log.logIndex),
+      id: randomUUID(),
       tokenId,
       platform,
       username,
