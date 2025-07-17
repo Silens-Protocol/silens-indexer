@@ -6,6 +6,8 @@ import { SilensProposalVotingAbi } from "./abis/SilensProposalVotingAbi";
 import { SilensReputationSystemAbi } from "./abis/SilensReputationSystemAbi";
 import { SilensIdentityAbi } from "./abis/SilensIdentityAbi";
 
+import 'dotenv/config'
+
 export default createConfig({
   chains: {
     scrollSepolia: {
@@ -47,6 +49,6 @@ export default createConfig({
   },
   database: {
     kind: "postgres",
-    connectionString: "",
+    connectionString: process.env.DATABASE_URL,
   }
 });
