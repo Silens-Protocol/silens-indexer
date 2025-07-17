@@ -17,6 +17,9 @@ importers:
       hono:
         specifier: ^4.5.0
         version: 4.8.3
+      pinata:
+        specifier: ^2.4.9
+        version: 2.4.9
       ponder:
         specifier: ^0.11.22
         version: 0.11.22(@opentelemetry/api@1.9.0)(@types/node@20.19.2)(@types/pg@8.15.4)(hono@4.8.3)(typescript@5.8.3)(viem@2.31.4(typescript@5.8.3))
@@ -1324,6 +1327,18 @@ packages:
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
+
+  pinata@2.4.9:
+    resolution: {integrity: sha512-94fMvBJXnFgDyZkYRd7SCaXsHZERtDAjIcPIpYlUXAorv77xav3UMU0fipX/EKZwl3Uv8P7Mbul12KdbqpLRdA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
 
   pino-abstract-transport@1.2.0:
     resolution: {integrity: sha512-Guhh8EZfPCfH+PMXAb6rKOjGQEoy0xlAIn+irODG5kgfYV+BQ0rGYYWTIel3P5mmyXqkYkPmdIkywsn6QKUR1Q==}
@@ -2831,6 +2846,8 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
+
+  pinata@2.4.9: {}
 
   pino-abstract-transport@1.2.0:
     dependencies:

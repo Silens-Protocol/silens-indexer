@@ -19,7 +19,8 @@ import {
 import { Hono } from "hono";
 import { eq, and, desc, sql, gte } from "drizzle-orm";
 import { graphql } from "ponder";
-import { serializeBigInts } from "../utils";
+import { serializeBigInts, getModelWithRelatedData } from "../utils";
+import { getIPFSData, getIPFSImageUrl } from "../utils/pinata";
 
 const app = new Hono();
 
@@ -73,62 +74,7 @@ app.get("/models", async (c) => {
 
   const modelsWithRelated = await Promise.all(
     results.map(async (modelData) => {
-      const modelId = modelData.id;
-
-      const reviewsData = await db.select()
-        .from(review)
-        .where(eq(review.modelId, modelId))
-        .orderBy(desc(review.timestamp));
-
-      const reviews = await Promise.all(
-        reviewsData.map(async (reviewData) => {
-          const reviewer = await db.select()
-            .from(identity)
-            .where(eq(identity.owner, reviewData.reviewer))
-            .limit(1);
-
-          return {
-            id: reviewData.id,
-            reviewer: reviewer[0] || null,
-            ipfsHash: reviewData.ipfsHash,
-            reviewType: reviewData.reviewType,
-            severity: reviewData.severity,
-            timestamp: reviewData.timestamp,
-            createdAt: reviewData.createdAt
-          };
-        })
-      );
-
-      const proposals = await db.select()
-        .from(proposal)
-        .where(eq(proposal.modelId, modelId))
-        .orderBy(desc(proposal.createdAt));
-
-      const stats = await db.select()
-        .from(modelStats)
-        .where(eq(modelStats.id, modelId))
-        .limit(1);
-
-      const submitter = await db.select()
-        .from(identity)
-        .where(eq(identity.owner, modelData.submitter))
-        .limit(1);
-
-      return {
-        id: modelData.id.toString(),
-        submitter: submitter[0] || null,
-        ipfsHash: modelData.ipfsHash,
-        status: modelData.status,
-        submissionTime: modelData.submissionTime,
-        reviewEndTime: modelData.reviewEndTime,
-        upvotes: modelData.upvotes,
-        downvotes: modelData.downvotes,
-        createdAt: modelData.createdAt,
-        updatedAt: modelData.updatedAt,
-        reviews: reviews,
-        proposals: proposals,
-        stats: stats[0] || {}
-      };
+      return await getModelWithRelatedData(modelData, db, getIPFSData, getIPFSImageUrl);
     })
   );
 
@@ -151,61 +97,9 @@ app.get("/models/:id", async (c) => {
   }
 
   const modelRecord = modelData[0]!;
+  const modelWithRelated = await getModelWithRelatedData(modelRecord, db, getIPFSData, getIPFSImageUrl);
 
-  const reviewsData = await db.select()
-    .from(review)
-    .where(eq(review.modelId, modelId))
-    .orderBy(desc(review.timestamp));
-
-  const reviews = await Promise.all(
-    reviewsData.map(async (reviewData) => {
-      const reviewer = await db.select()
-        .from(identity)
-        .where(eq(identity.owner, reviewData.reviewer))
-        .limit(1);
-
-      return {
-        id: reviewData.id,
-        reviewer: reviewer[0] || null,
-        ipfsHash: reviewData.ipfsHash,
-        reviewType: reviewData.reviewType,
-        severity: reviewData.severity,
-        timestamp: reviewData.timestamp,
-        createdAt: reviewData.createdAt
-      };
-    })
-  );
-
-  const proposals = await db.select()
-    .from(proposal)
-    .where(eq(proposal.modelId, modelId))
-    .orderBy(desc(proposal.createdAt));
-
-  const stats = await db.select()
-    .from(modelStats)
-    .where(eq(modelStats.id, modelId))
-    .limit(1);
-
-  const submitter = await db.select()
-    .from(identity)
-    .where(eq(identity.owner, modelRecord.submitter))
-    .limit(1);
-
-  return c.json({
-    id: modelRecord.id.toString(),
-    submitter: serializeBigInts(submitter[0] || null),
-    ipfsHash: modelRecord.ipfsHash,
-    status: modelRecord.status,
-    submissionTime: modelRecord.submissionTime,
-    reviewEndTime: modelRecord.reviewEndTime,
-    upvotes: modelRecord.upvotes,
-    downvotes: modelRecord.downvotes,
-    createdAt: modelRecord.createdAt,
-    updatedAt: modelRecord.updatedAt,
-    reviews: serializeBigInts(reviews),
-    proposals: serializeBigInts(proposals),
-    stats: serializeBigInts(stats[0] || {})
-  });
+  return c.json(serializeBigInts(modelWithRelated));
 });
 
 app.get("/models/:id/reviews", async (c) => {
@@ -660,7 +554,7 @@ app.get("/analytics/reviews", async (c) => {
 
 app.get("/search", async (c) => {
   const query = c.req.query("q");
-  const type = c.req.query("type"); // models, users, reviews
+  const type = c.req.query("type");
   const limit = parseInt(c.req.query("limit") || "10");
 
   if (!query) {
@@ -697,5 +591,6 @@ app.get("/search", async (c) => {
     type
   });
 });
+
 
 export default app;

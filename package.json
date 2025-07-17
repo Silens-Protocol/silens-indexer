@@ -15,8 +15,9 @@
   },
   "dependencies": {
     "dotenv": "^17.0.0",
-      "drizzle-orm": "^0.41.0",
+    "drizzle-orm": "^0.41.0",
     "hono": "^4.5.0",
+    "pinata": "^2.4.9",
     "ponder": "^0.11.22",
     "viem": "^2.21.3"
   },
