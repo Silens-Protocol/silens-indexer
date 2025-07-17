@@ -113,11 +113,7 @@ export const SilensAbi = [
     inputs: [],
     name: "identitySystem",
     outputs: [
-      {
-        internalType: "contract SilensIdentityRegistry",
-        name: "",
-        type: "address",
-      },
+      { internalType: "contract IdentityRegistry", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -126,7 +122,7 @@ export const SilensAbi = [
     inputs: [],
     name: "modelRegistry",
     outputs: [
-      { internalType: "contract SilensModel", name: "", type: "address" },
+      { internalType: "contract ModelRegistry", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -149,7 +145,7 @@ export const SilensAbi = [
     inputs: [],
     name: "proposalVoting",
     outputs: [
-      { internalType: "contract SilensProposal", name: "", type: "address" },
+      { internalType: "contract VotingProposal", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -165,7 +161,7 @@ export const SilensAbi = [
     inputs: [],
     name: "reputationSystem",
     outputs: [
-      { internalType: "contract SilensReputation", name: "", type: "address" },
+      { internalType: "contract ReputationSystem", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",

@@ -1,4 +1,4 @@
-export const SilensProposalAbi = [
+export const VotingProposalAbi = [
   {
     inputs: [
       { internalType: "address", name: "_reputationSystem", type: "address" },
@@ -175,7 +175,7 @@ export const SilensProposalAbi = [
     inputs: [
       { internalType: "uint256", name: "_modelId", type: "uint256" },
       {
-        internalType: "enum SilensProposal.ProposalType",
+        internalType: "enum VotingProposal.ProposalType",
         name: "_type",
         type: "uint8",
       },
@@ -201,12 +201,12 @@ export const SilensProposalAbi = [
           { internalType: "uint256", name: "id", type: "uint256" },
           { internalType: "uint256", name: "modelId", type: "uint256" },
           {
-            internalType: "enum SilensProposal.ProposalType",
+            internalType: "enum VotingProposal.ProposalType",
             name: "proposalType",
             type: "uint8",
           },
           {
-            internalType: "enum SilensProposal.ProposalStatus",
+            internalType: "enum VotingProposal.ProposalStatus",
             name: "status",
             type: "uint8",
           },
@@ -216,7 +216,7 @@ export const SilensProposalAbi = [
           { internalType: "uint256", name: "endTime", type: "uint256" },
           { internalType: "bool", name: "executed", type: "bool" },
         ],
-        internalType: "struct SilensProposal.Proposal",
+        internalType: "struct VotingProposal.Proposal",
         name: "",
         type: "tuple",
       },
@@ -238,11 +238,7 @@ export const SilensProposalAbi = [
     inputs: [],
     name: "identitySystem",
     outputs: [
-      {
-        internalType: "contract SilensIdentityRegistry",
-        name: "",
-        type: "address",
-      },
+      { internalType: "contract IdentityRegistry", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -251,7 +247,7 @@ export const SilensProposalAbi = [
     inputs: [],
     name: "modelRegistry",
     outputs: [
-      { internalType: "contract SilensModel", name: "", type: "address" },
+      { internalType: "contract ModelRegistry", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -270,12 +266,12 @@ export const SilensProposalAbi = [
       { internalType: "uint256", name: "id", type: "uint256" },
       { internalType: "uint256", name: "modelId", type: "uint256" },
       {
-        internalType: "enum SilensProposal.ProposalType",
+        internalType: "enum VotingProposal.ProposalType",
         name: "proposalType",
         type: "uint8",
       },
       {
-        internalType: "enum SilensProposal.ProposalStatus",
+        internalType: "enum VotingProposal.ProposalStatus",
         name: "status",
         type: "uint8",
       },
@@ -306,7 +302,7 @@ export const SilensProposalAbi = [
     inputs: [],
     name: "reputationSystem",
     outputs: [
-      { internalType: "contract SilensReputation", name: "", type: "address" },
+      { internalType: "contract ReputationSystem", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -318,6 +314,33 @@ export const SilensProposalAbi = [
     name: "setIdentitySystem",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_newQuorumPercentage",
+        type: "uint256",
+      },
+    ],
+    name: "setQuorumPercentage",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "_silens", type: "address" }],
+    name: "setSilens",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "silens",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
     type: "function",
   },
   {

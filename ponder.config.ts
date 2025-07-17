@@ -1,10 +1,10 @@
 import { createConfig } from "ponder";
 import { http } from "viem";
 import { SilensAbi } from "./abis/SilensAbi";
-import { SilensModelAbi } from "./abis/SilensModelAbi";
-import { SilensProposalAbi } from "./abis/SilensProposalAbi";
-import { SilensReputationAbi } from "./abis/SilensReputationAbi";
-import { SilensIdentityRegistryAbi } from "./abis/SilensIdentityRegistryAbi";
+import { ModelRegistryAbi } from "./abis/ModelRegistryAbi";
+import { VotingProposalAbi } from "./abis/VotingProposalAbi";
+import { ReputationSystemAbi } from "./abis/ReputationSystemAbi";
+import { IdentityRegistryAbi } from "./abis/IdentityRegistryAbi";
 
 export default createConfig({
   chains: {
@@ -17,32 +17,32 @@ export default createConfig({
     Silens: {
       abi: SilensAbi,
       chain: "scrollSepolia",
-      address: "0x4fDf383C1eB910893583398AFa61B497860C670C",
-      startBlock: 10898950,
+      address: "0xead4333D786BAfb96DD2E9F5100f3492a2a3f358",
+      startBlock: 10901872,
     },
-    SilensModel: {
-      abi: SilensModelAbi,
+    ModelRegistry: {
+      abi: ModelRegistryAbi,
       chain: "scrollSepolia",
-      address: "0x02e4F622509642351e6767F6D487d999a7ae8E55",
-      startBlock: 10898950,
+      address: "0xf7beA8B435A228595Dee20dC1bde146eEBDB6a97",
+      startBlock: 10901872,
     },
-    SilensProposal: {
-      abi: SilensProposalAbi,
+    VotingProposal: {
+      abi: VotingProposalAbi,
       chain: "scrollSepolia",
-      address: "0xdB8C1Cb80A28eC7fC7Eb65e861b016d82686B626",
-      startBlock: 10898950,
+      address: "0x96842cafd37F1F7bdE59ef2dA601320F396589F8",
+      startBlock: 10901872,
     },
-    SilensReputation: {
-      abi: SilensReputationAbi,
+    ReputationSystem: {
+      abi: ReputationSystemAbi,
       chain: "scrollSepolia",
-      address: "0xE743218b205916e0c0c027dA3Cc1366284514621",
-      startBlock: 10898950,
+      address: "0x9B7BE371a83179C21debAAFa7038e2210b9Dd08D",
+      startBlock: 10901872,
     },
-    SilensIdentityRegistry: {
-      abi: SilensIdentityRegistryAbi,
+    IdentityRegistry: {
+      abi: IdentityRegistryAbi,
       chain: "scrollSepolia",
-      address: "0x7b74155177aDe9cCe1a8AaF02D9942eA71809af4",
-      startBlock: 10898950,
+      address: "0x4092F361c8186865923e7DD217900735f00cb566",
+      startBlock: 10901872,
     },
   },
   database: {

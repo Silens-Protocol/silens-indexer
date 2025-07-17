@@ -1,4 +1,4 @@
-export const SilensReputationAbi = [
+export const ReputationSystemAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   {
     inputs: [
@@ -234,16 +234,6 @@ export const SilensReputationAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "address", name: "_user", type: "address" },
-      { internalType: "uint256", name: "_points", type: "uint256" },
-    ],
-    name: "addReputation",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [{ internalType: "address", name: "_submitter", type: "address" }],
     name: "awardModelSubmissionPoints",
     outputs: [],
@@ -305,11 +295,7 @@ export const SilensReputationAbi = [
     inputs: [],
     name: "identitySystem",
     outputs: [
-      {
-        internalType: "contract SilensIdentityRegistry",
-        name: "",
-        type: "address",
-      },
+      { internalType: "contract IdentityRegistry", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -321,6 +307,13 @@ export const SilensReputationAbi = [
     ],
     name: "isApprovedForAll",
     outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "modelRegistry",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -382,10 +375,26 @@ export const SilensReputationAbi = [
     type: "function",
   },
   {
+    inputs: [{ internalType: "address", name: "_user", type: "address" }],
+    name: "setGovernanceVoter",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       { internalType: "address", name: "_identitySystem", type: "address" },
     ],
     name: "setIdentitySystem",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "_modelRegistry", type: "address" },
+    ],
+    name: "setModelRegistry",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

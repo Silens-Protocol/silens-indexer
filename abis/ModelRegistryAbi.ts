@@ -1,4 +1,4 @@
-export const SilensModelAbi = [
+export const ModelRegistryAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   {
     inputs: [{ internalType: "address", name: "owner", type: "address" }],
@@ -111,6 +111,12 @@ export const SilensModelAbi = [
       {
         indexed: false,
         internalType: "uint8",
+        name: "reviewType",
+        type: "uint8",
+      },
+      {
+        indexed: false,
+        internalType: "uint8",
         name: "severity",
         type: "uint8",
       },
@@ -134,7 +140,7 @@ export const SilensModelAbi = [
           { internalType: "address", name: "submitter", type: "address" },
           { internalType: "string", name: "ipfsHash", type: "string" },
           {
-            internalType: "enum SilensModel.ModelStatus",
+            internalType: "enum ModelRegistry.ModelStatus",
             name: "status",
             type: "uint8",
           },
@@ -143,7 +149,7 @@ export const SilensModelAbi = [
           { internalType: "uint256", name: "upvotes", type: "uint256" },
           { internalType: "uint256", name: "downvotes", type: "uint256" },
         ],
-        internalType: "struct SilensModel.Model",
+        internalType: "struct ModelRegistry.Model",
         name: "",
         type: "tuple",
       },
@@ -159,10 +165,15 @@ export const SilensModelAbi = [
         components: [
           { internalType: "address", name: "reviewer", type: "address" },
           { internalType: "string", name: "ipfsHash", type: "string" },
+          {
+            internalType: "enum ModelRegistry.ReviewType",
+            name: "reviewType",
+            type: "uint8",
+          },
           { internalType: "uint8", name: "severity", type: "uint8" },
           { internalType: "uint256", name: "timestamp", type: "uint256" },
         ],
-        internalType: "struct SilensModel.Review[]",
+        internalType: "struct ModelRegistry.Review[]",
         name: "",
         type: "tuple[]",
       },
@@ -191,11 +202,7 @@ export const SilensModelAbi = [
     inputs: [],
     name: "identitySystem",
     outputs: [
-      {
-        internalType: "contract SilensIdentityRegistry",
-        name: "",
-        type: "address",
-      },
+      { internalType: "contract IdentityRegistry", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -209,6 +216,11 @@ export const SilensModelAbi = [
     outputs: [
       { internalType: "address", name: "reviewer", type: "address" },
       { internalType: "string", name: "ipfsHash", type: "string" },
+      {
+        internalType: "enum ModelRegistry.ReviewType",
+        name: "reviewType",
+        type: "uint8",
+      },
       { internalType: "uint8", name: "severity", type: "uint8" },
       { internalType: "uint256", name: "timestamp", type: "uint256" },
     ],
@@ -223,7 +235,7 @@ export const SilensModelAbi = [
       { internalType: "address", name: "submitter", type: "address" },
       { internalType: "string", name: "ipfsHash", type: "string" },
       {
-        internalType: "enum SilensModel.ModelStatus",
+        internalType: "enum ModelRegistry.ModelStatus",
         name: "status",
         type: "uint8",
       },
@@ -244,6 +256,13 @@ export const SilensModelAbi = [
   },
   {
     inputs: [],
+    name: "proposalContract",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
@@ -253,7 +272,7 @@ export const SilensModelAbi = [
     inputs: [],
     name: "reputationSystem",
     outputs: [
-      { internalType: "contract SilensReputation", name: "", type: "address" },
+      { internalType: "contract ReputationSystem", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -270,6 +289,15 @@ export const SilensModelAbi = [
       { internalType: "address", name: "_identitySystem", type: "address" },
     ],
     name: "setIdentitySystem",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "_proposalContract", type: "address" },
+    ],
+    name: "setProposalContract",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -294,6 +322,11 @@ export const SilensModelAbi = [
     inputs: [
       { internalType: "uint256", name: "_modelId", type: "uint256" },
       { internalType: "string", name: "_ipfsHash", type: "string" },
+      {
+        internalType: "enum ModelRegistry.ReviewType",
+        name: "_reviewType",
+        type: "uint8",
+      },
       { internalType: "uint8", name: "_severity", type: "uint8" },
     ],
     name: "submitReview",
@@ -312,7 +345,7 @@ export const SilensModelAbi = [
     inputs: [
       { internalType: "uint256", name: "_modelId", type: "uint256" },
       {
-        internalType: "enum SilensModel.ModelStatus",
+        internalType: "enum ModelRegistry.ModelStatus",
         name: "_status",
         type: "uint8",
       },

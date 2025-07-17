@@ -26,6 +26,11 @@ export const BadgeType = {
   GOVERNANCE_VOTER: 3,
 } as const;
 
+export const ReviewType = {
+  POSITIVE: 0,
+  NEGATIVE: 1,
+} as const;
+
 export const model = onchainTable("model", (t) => ({
   id: t.bigint().primaryKey(),
   submitter: t.hex().notNull(),
@@ -51,6 +56,7 @@ export const review = onchainTable("review", (t) => ({
   modelId: t.bigint().notNull(),
   reviewer: t.hex().notNull(),
   ipfsHash: t.text().notNull(),
+  reviewType: t.integer().notNull(),
   severity: t.integer().notNull(),
   timestamp: t.bigint().notNull(),
   createdAt: t.bigint().notNull(),
