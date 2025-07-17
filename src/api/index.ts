@@ -49,12 +49,10 @@ app.get("/models", async (c) => {
   const offset = parseInt(c.req.query("offset") || "0");
   const status = c.req.query("status");
   const submitter = c.req.query("submitter");
-  const search = c.req.query("search");
 
   const conditions = [];
   if (status !== undefined) conditions.push(eq(model.status, parseInt(status)));
   if (submitter) conditions.push(eq(model.submitter, submitter as `0x${string}`));
-  if (search) conditions.push(sql`${model.name} ILIKE ${`%${search}%`}`);
   
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
   
@@ -504,7 +502,6 @@ app.get("/search", async (c) => {
   if (!type || type === "models") {
     const models = await db.select()
       .from(model)
-      .where(sql`${model.name} ILIKE ${`%${query}%`} OR ${model.summary} ILIKE ${`%${query}%`}`)
       .limit(limit);
     results.push(...models.map(m => ({ ...m, type: "model" })));
   }
@@ -520,7 +517,6 @@ app.get("/search", async (c) => {
   if (!type || type === "reviews") {
     const reviews = await db.select()
       .from(review)
-      .where(sql`${review.prompt} ILIKE ${`%${query}%`} OR ${review.outputLog} ILIKE ${`%${query}%`}`)
       .limit(limit);
     results.push(...reviews.map(r => ({ ...r, type: "review" })));
   }

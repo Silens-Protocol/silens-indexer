@@ -1,4 +1,4 @@
-export const SilensIdentityAbi = [
+export const SilensIdentityRegistryAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   { inputs: [], name: "ECDSAInvalidSignature", type: "error" },
   {

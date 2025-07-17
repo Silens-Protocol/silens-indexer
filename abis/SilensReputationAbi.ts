@@ -1,4 +1,4 @@
-export const SilensReputationSystemAbi = [
+export const SilensReputationAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   {
     inputs: [
@@ -305,7 +305,11 @@ export const SilensReputationSystemAbi = [
     inputs: [],
     name: "identitySystem",
     outputs: [
-      { internalType: "contract SilensIdentity", name: "", type: "address" },
+      {
+        internalType: "contract SilensIdentityRegistry",
+        name: "",
+        type: "address",
+      },
     ],
     stateMutability: "view",
     type: "function",

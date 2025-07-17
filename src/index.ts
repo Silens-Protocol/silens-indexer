@@ -17,12 +17,10 @@ import {
 
 // ==================== SilensModelRegistry Events ====================
 
-ponder.on("SilensModelRegistry:ModelSubmitted", async ({ event, context }) => {
+ponder.on("SilensModel:ModelSubmitted", async ({ event, context }) => {
   const { 
     modelId, 
     submitter, 
-    name, 
-    summary, 
     ipfsHash, 
     status, 
     submissionTime, 
@@ -34,8 +32,6 @@ ponder.on("SilensModelRegistry:ModelSubmitted", async ({ event, context }) => {
     .values({
       id: modelId,
       submitter,
-      name,
-      summary,
       ipfsHash,
       status,
       submissionTime,
@@ -87,13 +83,11 @@ ponder.on("SilensModelRegistry:ModelSubmitted", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensModelRegistry:ReviewSubmitted", async ({ event, context }) => {
+ponder.on("SilensModel:ReviewSubmitted", async ({ event, context }) => {
   const { 
     modelId, 
     reviewer, 
-    prompt, 
-    outputLog, 
-    screenshotHash, 
+    ipfsHash, 
     severity, 
     timestamp 
   } = event.args;
@@ -104,9 +98,7 @@ ponder.on("SilensModelRegistry:ReviewSubmitted", async ({ event, context }) => {
       id: BigInt(event.log.logIndex),
       modelId,
       reviewer,
-      prompt,
-      outputLog,
-      screenshotHash,
+      ipfsHash,
       severity,
       timestamp,
       createdAt: event.block.timestamp,
@@ -176,7 +168,7 @@ ponder.on("SilensModelRegistry:ReviewSubmitted", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensModelRegistry:ModelStatusUpdated", async ({ event, context }) => {
+ponder.on("SilensModel:ModelStatusUpdated", async ({ event, context }) => {
   const { modelId, newStatus } = event.args;
 
   await context.db
@@ -189,7 +181,7 @@ ponder.on("SilensModelRegistry:ModelStatusUpdated", async ({ event, context }) =
 
 // ==================== SilensProposalVoting Events ====================
 
-ponder.on("SilensProposalVoting:ProposalCreated", async ({ event, context }) => {
+ponder.on("SilensProposal:ProposalCreated", async ({ event, context }) => {
   const { 
     proposalId, 
     modelId, 
@@ -259,7 +251,7 @@ ponder.on("SilensProposalVoting:ProposalCreated", async ({ event, context }) => 
     }));
 });
 
-ponder.on("SilensProposalVoting:VoteCast", async ({ event, context }) => {
+ponder.on("SilensProposal:VoteCast", async ({ event, context }) => {
   const { 
     proposalId, 
     voter, 
@@ -340,7 +332,7 @@ ponder.on("SilensProposalVoting:VoteCast", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensProposalVoting:ProposalExecuted", async ({ event, context }) => {
+ponder.on("SilensProposal:ProposalExecuted", async ({ event, context }) => {
   const { 
     proposalId, 
     result, 
@@ -379,7 +371,7 @@ ponder.on("SilensProposalVoting:ProposalExecuted", async ({ event, context }) =>
 
 // ==================== SilensReputationSystem Events ====================
 
-ponder.on("SilensReputationSystem:ReputationUpdated", async ({ event, context }) => {
+ponder.on("SilensReputation:ReputationUpdated", async ({ event, context }) => {
   const { user: userId, newScore, pointsAdded, reason } = event.args;
 
   await context.db
@@ -434,7 +426,7 @@ ponder.on("SilensReputationSystem:ReputationUpdated", async ({ event, context })
     }));
 });
 
-ponder.on("SilensReputationSystem:BadgeAwarded", async ({ event, context }) => {
+ponder.on("SilensReputation:BadgeAwarded", async ({ event, context }) => {
   const { user: userId, badgeId, badgeName, timestamp } = event.args;
 
   await context.db
@@ -492,7 +484,7 @@ ponder.on("SilensReputationSystem:BadgeAwarded", async ({ event, context }) => {
 
 // ==================== SilensIdentity Events ====================
 
-ponder.on("SilensIdentity:IdentityMinted", async ({ event, context }) => {
+ponder.on("SilensIdentityRegistry:IdentityMinted", async ({ event, context }) => {
   const { owner, tokenId, uri, timestamp } = event.args;
 
   await context.db
@@ -550,7 +542,7 @@ ponder.on("SilensIdentity:IdentityMinted", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensIdentity:PlatformVerified", async ({ event, context }) => {
+ponder.on("SilensIdentityRegistry:PlatformVerified", async ({ event, context }) => {
   const { tokenId, platform, username, owner, timestamp } = event.args;
 
   await context.db
@@ -620,7 +612,7 @@ ponder.on("SilensIdentity:PlatformVerified", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensIdentity:SetIdentitiesRoot", async ({ event, context }) => {
+ponder.on("SilensIdentityRegistry:SetIdentitiesRoot", async ({ event, context }) => {
   const { id, identitiesRoot } = event.args;
   console.log(`Identity root set for token ${id}: ${identitiesRoot}`);
 });

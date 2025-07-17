@@ -1,4 +1,4 @@
-export const SilensModelRegistryAbi = [
+export const SilensModelAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   {
     inputs: [{ internalType: "address", name: "owner", type: "address" }],
@@ -44,13 +44,6 @@ export const SilensModelRegistryAbi = [
         internalType: "address",
         name: "submitter",
         type: "address",
-      },
-      { indexed: false, internalType: "string", name: "name", type: "string" },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "summary",
-        type: "string",
       },
       {
         indexed: false,
@@ -112,19 +105,7 @@ export const SilensModelRegistryAbi = [
       {
         indexed: false,
         internalType: "string",
-        name: "prompt",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "outputLog",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "screenshotHash",
+        name: "ipfsHash",
         type: "string",
       },
       {
@@ -151,11 +132,9 @@ export const SilensModelRegistryAbi = [
         components: [
           { internalType: "uint256", name: "id", type: "uint256" },
           { internalType: "address", name: "submitter", type: "address" },
-          { internalType: "string", name: "name", type: "string" },
-          { internalType: "string", name: "summary", type: "string" },
           { internalType: "string", name: "ipfsHash", type: "string" },
           {
-            internalType: "enum SilensModelRegistry.ModelStatus",
+            internalType: "enum SilensModel.ModelStatus",
             name: "status",
             type: "uint8",
           },
@@ -164,7 +143,7 @@ export const SilensModelRegistryAbi = [
           { internalType: "uint256", name: "upvotes", type: "uint256" },
           { internalType: "uint256", name: "downvotes", type: "uint256" },
         ],
-        internalType: "struct SilensModelRegistry.Model",
+        internalType: "struct SilensModel.Model",
         name: "",
         type: "tuple",
       },
@@ -179,13 +158,11 @@ export const SilensModelRegistryAbi = [
       {
         components: [
           { internalType: "address", name: "reviewer", type: "address" },
-          { internalType: "string", name: "prompt", type: "string" },
-          { internalType: "string", name: "outputLog", type: "string" },
-          { internalType: "string", name: "screenshotHash", type: "string" },
+          { internalType: "string", name: "ipfsHash", type: "string" },
           { internalType: "uint8", name: "severity", type: "uint8" },
           { internalType: "uint256", name: "timestamp", type: "uint256" },
         ],
-        internalType: "struct SilensModelRegistry.Review[]",
+        internalType: "struct SilensModel.Review[]",
         name: "",
         type: "tuple[]",
       },
@@ -214,7 +191,11 @@ export const SilensModelRegistryAbi = [
     inputs: [],
     name: "identitySystem",
     outputs: [
-      { internalType: "contract SilensIdentity", name: "", type: "address" },
+      {
+        internalType: "contract SilensIdentityRegistry",
+        name: "",
+        type: "address",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -227,9 +208,7 @@ export const SilensModelRegistryAbi = [
     name: "modelReviews",
     outputs: [
       { internalType: "address", name: "reviewer", type: "address" },
-      { internalType: "string", name: "prompt", type: "string" },
-      { internalType: "string", name: "outputLog", type: "string" },
-      { internalType: "string", name: "screenshotHash", type: "string" },
+      { internalType: "string", name: "ipfsHash", type: "string" },
       { internalType: "uint8", name: "severity", type: "uint8" },
       { internalType: "uint256", name: "timestamp", type: "uint256" },
     ],
@@ -242,11 +221,9 @@ export const SilensModelRegistryAbi = [
     outputs: [
       { internalType: "uint256", name: "id", type: "uint256" },
       { internalType: "address", name: "submitter", type: "address" },
-      { internalType: "string", name: "name", type: "string" },
-      { internalType: "string", name: "summary", type: "string" },
       { internalType: "string", name: "ipfsHash", type: "string" },
       {
-        internalType: "enum SilensModelRegistry.ModelStatus",
+        internalType: "enum SilensModel.ModelStatus",
         name: "status",
         type: "uint8",
       },
@@ -276,11 +253,7 @@ export const SilensModelRegistryAbi = [
     inputs: [],
     name: "reputationSystem",
     outputs: [
-      {
-        internalType: "contract SilensReputationSystem",
-        name: "",
-        type: "address",
-      },
+      { internalType: "contract SilensReputation", name: "", type: "address" },
     ],
     stateMutability: "view",
     type: "function",
@@ -311,11 +284,7 @@ export const SilensModelRegistryAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "string", name: "_name", type: "string" },
-      { internalType: "string", name: "_summary", type: "string" },
-      { internalType: "string", name: "_ipfsHash", type: "string" },
-    ],
+    inputs: [{ internalType: "string", name: "_ipfsHash", type: "string" }],
     name: "submitModel",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "nonpayable",
@@ -324,9 +293,7 @@ export const SilensModelRegistryAbi = [
   {
     inputs: [
       { internalType: "uint256", name: "_modelId", type: "uint256" },
-      { internalType: "string", name: "_prompt", type: "string" },
-      { internalType: "string", name: "_outputLog", type: "string" },
-      { internalType: "string", name: "_screenshotHash", type: "string" },
+      { internalType: "string", name: "_ipfsHash", type: "string" },
       { internalType: "uint8", name: "_severity", type: "uint8" },
     ],
     name: "submitReview",
@@ -345,7 +312,7 @@ export const SilensModelRegistryAbi = [
     inputs: [
       { internalType: "uint256", name: "_modelId", type: "uint256" },
       {
-        internalType: "enum SilensModelRegistry.ModelStatus",
+        internalType: "enum SilensModel.ModelStatus",
         name: "_status",
         type: "uint8",
       },

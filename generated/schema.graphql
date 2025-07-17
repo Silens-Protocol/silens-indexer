@@ -49,8 +49,6 @@ type Query {
 type model {
   id: BigInt!
   submitter: String!
-  name: String!
-  summary: String!
   ipfsHash: String!
   status: Int!
   submissionTime: BigInt!
@@ -90,26 +88,6 @@ input modelFilter {
   submitter_ends_with: String
   submitter_not_starts_with: String
   submitter_not_ends_with: String
-  name: String
-  name_not: String
-  name_in: [String]
-  name_not_in: [String]
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_ends_with: String
-  name_not_starts_with: String
-  name_not_ends_with: String
-  summary: String
-  summary_not: String
-  summary_in: [String]
-  summary_not_in: [String]
-  summary_contains: String
-  summary_not_contains: String
-  summary_starts_with: String
-  summary_ends_with: String
-  summary_not_starts_with: String
-  summary_not_ends_with: String
   ipfsHash: String
   ipfsHash_not: String
   ipfsHash_in: [String]
@@ -200,9 +178,7 @@ type review {
   id: BigInt!
   modelId: BigInt!
   reviewer: String!
-  prompt: String!
-  outputLog: String!
-  screenshotHash: String!
+  ipfsHash: String!
   severity: Int!
   timestamp: BigInt!
   createdAt: BigInt!
@@ -245,36 +221,16 @@ input reviewFilter {
   reviewer_ends_with: String
   reviewer_not_starts_with: String
   reviewer_not_ends_with: String
-  prompt: String
-  prompt_not: String
-  prompt_in: [String]
-  prompt_not_in: [String]
-  prompt_contains: String
-  prompt_not_contains: String
-  prompt_starts_with: String
-  prompt_ends_with: String
-  prompt_not_starts_with: String
-  prompt_not_ends_with: String
-  outputLog: String
-  outputLog_not: String
-  outputLog_in: [String]
-  outputLog_not_in: [String]
-  outputLog_contains: String
-  outputLog_not_contains: String
-  outputLog_starts_with: String
-  outputLog_ends_with: String
-  outputLog_not_starts_with: String
-  outputLog_not_ends_with: String
-  screenshotHash: String
-  screenshotHash_not: String
-  screenshotHash_in: [String]
-  screenshotHash_not_in: [String]
-  screenshotHash_contains: String
-  screenshotHash_not_contains: String
-  screenshotHash_starts_with: String
-  screenshotHash_ends_with: String
-  screenshotHash_not_starts_with: String
-  screenshotHash_not_ends_with: String
+  ipfsHash: String
+  ipfsHash_not: String
+  ipfsHash_in: [String]
+  ipfsHash_not_in: [String]
+  ipfsHash_contains: String
+  ipfsHash_not_contains: String
+  ipfsHash_starts_with: String
+  ipfsHash_ends_with: String
+  ipfsHash_not_starts_with: String
+  ipfsHash_not_ends_with: String
   severity: Int
   severity_not: Int
   severity_in: [Int]
