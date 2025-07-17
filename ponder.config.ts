@@ -13,7 +13,6 @@ export default createConfig({
     scrollSepolia: {
       id: 534351,
       rpc: http("https://sepolia-rpc.scroll.io"),
-      disableCache: true,
     },
   },
   contracts: {
