@@ -83,8 +83,8 @@ app.get("/models", async (c) => {
       const reviews = await Promise.all(
         reviewsData.map(async (reviewData) => {
           const reviewer = await db.select()
-            .from(user)
-            .where(eq(user.address, reviewData.reviewer))
+            .from(identity)
+            .where(eq(identity.owner, reviewData.reviewer))
             .limit(1);
 
           return {
@@ -105,8 +105,8 @@ app.get("/models", async (c) => {
         .limit(1);
 
       const submitter = await db.select()
-        .from(user)
-        .where(eq(user.address, modelData.submitter))
+        .from(identity)
+        .where(eq(identity.owner, modelData.submitter))
         .limit(1);
 
       return {
@@ -147,8 +147,8 @@ app.get("/models/:id", async (c) => {
   const reviews = await Promise.all(
     reviewsData.map(async (reviewData) => {
       const reviewer = await db.select()
-        .from(user)
-        .where(eq(user.address, reviewData.reviewer))
+        .from(identity)
+        .where(eq(identity.owner, reviewData.reviewer))
         .limit(1);
 
       return {
@@ -169,8 +169,8 @@ app.get("/models/:id", async (c) => {
     .limit(1);
 
   const submitter = await db.select()
-    .from(user)
-    .where(eq(user.address, modelRecord.submitter))
+    .from(identity)
+    .where(eq(identity.owner, modelRecord.submitter))
     .limit(1);
 
   return c.json({
@@ -201,8 +201,8 @@ app.get("/models/:id/reviews", async (c) => {
   const reviewsWithUsers = await Promise.all(
     results.map(async (reviewData) => {
       const reviewer = await db.select()
-        .from(user)
-        .where(eq(user.address, reviewData.reviewer))
+        .from(identity)
+        .where(eq(identity.owner, reviewData.reviewer))
         .limit(1);
 
       return {
@@ -244,8 +244,8 @@ app.get("/reviews", async (c) => {
   const reviewsWithUsers = await Promise.all(
     results.map(async (reviewData) => {
       const reviewer = await db.select()
-        .from(user)
-        .where(eq(user.address, reviewData.reviewer))
+        .from(identity)
+        .where(eq(identity.owner, reviewData.reviewer))
         .limit(1);
 
       return {
@@ -310,8 +310,8 @@ app.get("/proposals/:id", async (c) => {
   const votes = await Promise.all(
     votesData.map(async (voteData) => {
       const voter = await db.select()
-        .from(user)
-        .where(eq(user.address, voteData.voter))
+        .from(identity)
+        .where(eq(identity.owner, voteData.voter))
         .limit(1);
 
       return {
@@ -352,8 +352,8 @@ app.get("/proposals/:id/votes", async (c) => {
   const votesWithUsers = await Promise.all(
     results.map(async (voteData) => {
       const voter = await db.select()
-        .from(user)
-        .where(eq(user.address, voteData.voter))
+        .from(identity)
+        .where(eq(identity.owner, voteData.voter))
         .limit(1);
 
       return {
