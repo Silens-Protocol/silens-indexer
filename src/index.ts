@@ -22,7 +22,7 @@ console.log("🔍 NODE_ENV:", process.env.NODE_ENV);
 
 // ==================== SilensModelRegistry Events ====================
 
-ponder.on("SilensModel:ModelSubmitted", async ({ event, context }) => {
+ponder.on("ModelRegistry:ModelSubmitted", async ({ event, context }) => {
   const { 
     modelId, 
     submitter, 
@@ -88,11 +88,12 @@ ponder.on("SilensModel:ModelSubmitted", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensModel:ReviewSubmitted", async ({ event, context }) => {
+ponder.on("ModelRegistry:ReviewSubmitted", async ({ event, context }) => {
   const { 
     modelId, 
-    reviewer, 
-    ipfsHash, 
+    reviewer,
+    ipfsHash,
+    reviewType,
     severity, 
     timestamp 
   } = event.args;
@@ -104,6 +105,7 @@ ponder.on("SilensModel:ReviewSubmitted", async ({ event, context }) => {
       modelId,
       reviewer,
       ipfsHash,
+      reviewType,
       severity,
       timestamp,
       createdAt: event.block.timestamp,
@@ -173,7 +175,7 @@ ponder.on("SilensModel:ReviewSubmitted", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensModel:ModelStatusUpdated", async ({ event, context }) => {
+ponder.on("ModelRegistry:ModelStatusUpdated", async ({ event, context }) => {
   const { modelId, newStatus } = event.args;
 
   await context.db
@@ -186,7 +188,7 @@ ponder.on("SilensModel:ModelStatusUpdated", async ({ event, context }) => {
 
 // ==================== SilensProposalVoting Events ====================
 
-ponder.on("SilensProposal:ProposalCreated", async ({ event, context }) => {
+ponder.on("VotingProposal:ProposalCreated", async ({ event, context }) => {
   const { 
     proposalId, 
     modelId, 
@@ -256,7 +258,7 @@ ponder.on("SilensProposal:ProposalCreated", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensProposal:VoteCast", async ({ event, context }) => {
+ponder.on("VotingProposal:VoteCast", async ({ event, context }) => {
   const { 
     proposalId, 
     voter, 
@@ -337,7 +339,7 @@ ponder.on("SilensProposal:VoteCast", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensProposal:ProposalExecuted", async ({ event, context }) => {
+ponder.on("VotingProposal:ProposalExecuted", async ({ event, context }) => {
   const { 
     proposalId, 
     result, 
@@ -376,7 +378,7 @@ ponder.on("SilensProposal:ProposalExecuted", async ({ event, context }) => {
 
 // ==================== SilensReputationSystem Events ====================
 
-ponder.on("SilensReputation:ReputationUpdated", async ({ event, context }) => {
+ponder.on("ReputationSystem:ReputationUpdated", async ({ event, context }) => {
   const { user: userId, newScore, pointsAdded, reason } = event.args;
 
   await context.db
@@ -431,7 +433,7 @@ ponder.on("SilensReputation:ReputationUpdated", async ({ event, context }) => {
     }));
 });
 
-ponder.on("SilensReputation:BadgeAwarded", async ({ event, context }) => {
+ponder.on("ReputationSystem:BadgeAwarded", async ({ event, context }) => {
   const { user: userId, badgeId, badgeName, timestamp } = event.args;
 
   await context.db
@@ -489,7 +491,7 @@ ponder.on("SilensReputation:BadgeAwarded", async ({ event, context }) => {
 
 // ==================== SilensIdentity Events ====================
 
-ponder.on("SilensIdentityRegistry:IdentityMinted", async ({ event, context }) => {
+ponder.on("IdentityRegistry:IdentityMinted", async ({ event, context }) => {
   const { owner, tokenId, uri, timestamp } = event.args;
 
   await context.db
@@ -547,7 +549,7 @@ ponder.on("SilensIdentityRegistry:IdentityMinted", async ({ event, context }) =>
     }));
 });
 
-ponder.on("SilensIdentityRegistry:PlatformVerified", async ({ event, context }) => {
+ponder.on("IdentityRegistry:PlatformVerified", async ({ event, context }) => {
   const { tokenId, platform, username, owner, timestamp } = event.args;
 
   await context.db
@@ -617,7 +619,7 @@ ponder.on("SilensIdentityRegistry:PlatformVerified", async ({ event, context }) 
     }));
 });
 
-ponder.on("SilensIdentityRegistry:SetIdentitiesRoot", async ({ event, context }) => {
+ponder.on("IdentityRegistry:SetIdentitiesRoot", async ({ event, context }) => {
   const { id, identitiesRoot } = event.args;
   console.log(`Identity root set for token ${id}: ${identitiesRoot}`);
 });
