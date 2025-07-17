@@ -16,6 +16,10 @@ import {
 } from "ponder:schema";
 import { randomUUID } from "crypto";
 
+console.log("🚀 Ponder starting...");
+console.log("🔍 DATABASE_URL exists:", !!process.env.DATABASE_URL);
+console.log("🔍 NODE_ENV:", process.env.NODE_ENV);
+
 // ==================== SilensModelRegistry Events ====================
 
 ponder.on("SilensModel:ModelSubmitted", async ({ event, context }) => {

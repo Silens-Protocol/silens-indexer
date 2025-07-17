@@ -9,11 +9,13 @@
     "db": "ponder db",
     "codegen": "ponder codegen",
     "lint": "eslint .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "build": "npm run codegen",
+    "postinstall": "npm run codegen"
   },
   "dependencies": {
     "dotenv": "^17.0.0",
-    "drizzle-orm": "^0.41.0",
+      "drizzle-orm": "^0.41.0",
     "hono": "^4.5.0",
     "ponder": "^0.11.22",
     "viem": "^2.21.3"
