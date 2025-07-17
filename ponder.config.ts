@@ -6,8 +6,6 @@ import { SilensProposalAbi } from "./abis/SilensProposalAbi";
 import { SilensReputationAbi } from "./abis/SilensReputationAbi";
 import { SilensIdentityRegistryAbi } from "./abis/SilensIdentityRegistryAbi";
 
-import 'dotenv/config'
-
 export default createConfig({
   chains: {
     scrollSepolia: {
@@ -49,6 +47,6 @@ export default createConfig({
   },
   database: {
     kind: "postgres",
-    connectionString: process.env.DATABASE_URL,
+    connectionString: "postgresql://postgres:QhqkhDYINHmDRVeaGbEeXQSzLkDPPALq@turntable.proxy.rlwy.net:58028/railway"
   }
 });
