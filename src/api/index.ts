@@ -88,8 +88,13 @@ app.get("/models", async (c) => {
             .limit(1);
 
           return {
-            ...reviewData,
-            reviewer: reviewer[0] || null
+            id: reviewData.id,
+            reviewer: reviewer[0] || null,
+            ipfsHash: reviewData.ipfsHash,
+            reviewType: reviewData.reviewType,
+            severity: reviewData.severity,
+            timestamp: reviewData.timestamp,
+            createdAt: reviewData.createdAt
           };
         })
       );
@@ -110,11 +115,19 @@ app.get("/models", async (c) => {
         .limit(1);
 
       return {
-        ...modelData,
+        id: modelData.id.toString(),
+        submitter: submitter[0] || null,
+        ipfsHash: modelData.ipfsHash,
+        status: modelData.status,
+        submissionTime: modelData.submissionTime,
+        reviewEndTime: modelData.reviewEndTime,
+        upvotes: modelData.upvotes,
+        downvotes: modelData.downvotes,
+        createdAt: modelData.createdAt,
+        updatedAt: modelData.updatedAt,
         reviews: reviews,
         proposals: proposals,
-        stats: stats[0] || {},
-        submitter: submitter[0] || null
+        stats: stats[0] || {}
       };
     })
   );
@@ -152,8 +165,13 @@ app.get("/models/:id", async (c) => {
         .limit(1);
 
       return {
-        ...reviewData,
-        reviewer: reviewer[0] || null
+        id: reviewData.id,
+        reviewer: reviewer[0] || null,
+        ipfsHash: reviewData.ipfsHash,
+        reviewType: reviewData.reviewType,
+        severity: reviewData.severity,
+        timestamp: reviewData.timestamp,
+        createdAt: reviewData.createdAt
       };
     })
   );
@@ -174,11 +192,19 @@ app.get("/models/:id", async (c) => {
     .limit(1);
 
   return c.json({
-    model: serializeBigInts(modelRecord),
+    id: modelRecord.id.toString(),
+    submitter: serializeBigInts(submitter[0] || null),
+    ipfsHash: modelRecord.ipfsHash,
+    status: modelRecord.status,
+    submissionTime: modelRecord.submissionTime,
+    reviewEndTime: modelRecord.reviewEndTime,
+    upvotes: modelRecord.upvotes,
+    downvotes: modelRecord.downvotes,
+    createdAt: modelRecord.createdAt,
+    updatedAt: modelRecord.updatedAt,
     reviews: serializeBigInts(reviews),
     proposals: serializeBigInts(proposals),
-    stats: serializeBigInts(stats[0] || {}),
-    submitter: serializeBigInts(submitter[0] || null)
+    stats: serializeBigInts(stats[0] || {})
   });
 });
 
@@ -206,8 +232,13 @@ app.get("/models/:id/reviews", async (c) => {
         .limit(1);
 
       return {
-        ...reviewData,
-        reviewer: reviewer[0] || null
+        id: reviewData.id,
+        reviewer: reviewer[0] || null,
+        ipfsHash: reviewData.ipfsHash,
+        reviewType: reviewData.reviewType,
+        severity: reviewData.severity,
+        timestamp: reviewData.timestamp,
+        createdAt: reviewData.createdAt
       };
     })
   );
@@ -249,8 +280,13 @@ app.get("/reviews", async (c) => {
         .limit(1);
 
       return {
-        ...reviewData,
-        reviewer: reviewer[0] || null
+        id: reviewData.id,
+        reviewer: reviewer[0] || null,
+        ipfsHash: reviewData.ipfsHash,
+        reviewType: reviewData.reviewType,
+        severity: reviewData.severity,
+        timestamp: reviewData.timestamp,
+        createdAt: reviewData.createdAt
       };
     })
   );
