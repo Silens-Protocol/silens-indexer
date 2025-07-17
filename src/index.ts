@@ -43,7 +43,6 @@ ponder.on("SilensModel:ModelSubmitted", async ({ event, context }) => {
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(userStats)
@@ -106,7 +105,6 @@ ponder.on("SilensModel:ReviewSubmitted", async ({ event, context }) => {
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(userStats)
@@ -213,7 +211,6 @@ ponder.on("SilensProposal:ProposalCreated", async ({ event, context }) => {
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(modelStats)
@@ -278,7 +275,6 @@ ponder.on("SilensProposal:VoteCast", async ({ event, context }) => {
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(proposalStats)
@@ -390,7 +386,6 @@ ponder.on("SilensReputation:ReputationUpdated", async ({ event, context }) => {
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(user)
@@ -447,7 +442,6 @@ ponder.on("SilensReputation:BadgeAwarded", async ({ event, context }) => {
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(userStats)
@@ -505,7 +499,6 @@ ponder.on("SilensIdentityRegistry:IdentityMinted", async ({ event, context }) =>
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   await context.db
     .insert(user)
@@ -566,7 +559,6 @@ ponder.on("SilensIdentityRegistry:PlatformVerified", async ({ event, context }) 
       creationTxHash: event.transaction.hash,
       creationBlockNumber: event.block.number,
     })
-    .onConflictDoNothing();
 
   const existingUser = await context.db
     .find(user, { address: owner });
