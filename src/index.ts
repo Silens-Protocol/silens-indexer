@@ -366,14 +366,24 @@ ponder.on("VotingProposal:ProposalExecuted", async ({ event, context }) => {
     });
 
   await context.db
-    .update(proposalStats, { id: proposalId })
-    .set({
+    .insert(proposalStats)
+    .values({
+      id: proposalId,
+      totalVotes: 0,
+      forVotes: Number(forVotes),
+      againstVotes: Number(againstVotes),
+      participationRate: 0,
+      quorumMet,
+      majorityWon,
+      executionTime: event.block.timestamp,
+    })
+    .onConflictDoUpdate((existing) => ({
       forVotes: Number(forVotes),
       againstVotes: Number(againstVotes),
       quorumMet,
       majorityWon,
       executionTime: event.block.timestamp,
-    });
+    }));
 });
 
 // ==================== SilensReputationSystem Events ====================
