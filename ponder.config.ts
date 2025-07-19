@@ -8,45 +8,45 @@ import { IdentityRegistryAbi } from "./abis/IdentityRegistryAbi";
 
 export default createConfig({
   chains: {
-    scrollSepolia: {
-      id: 534351,
-      rpc: http("https://sepolia-rpc.scroll.io"),
+    bscTestnet: {
+      id: 97,
+      rpc: http("https://bsc-testnet-rpc.publicnode.com"),
     },
   },
   contracts: {
     Silens: {
       abi: SilensAbi,
-      chain: "scrollSepolia",
-      address: "0xead4333D786BAfb96DD2E9F5100f3492a2a3f358",
-      startBlock: 10901872,
+      chain: "bscTestnet",
+      address: "0xCA18A11ca8e44c9eef603242Ef3cc92EE8BE12C2",
+      startBlock: 58760240,
     },
     ModelRegistry: {
       abi: ModelRegistryAbi,
-      chain: "scrollSepolia",
-      address: "0xf7beA8B435A228595Dee20dC1bde146eEBDB6a97",
-      startBlock: 10901872,
+      chain: "bscTestnet",
+      address: "0xEFEE9654334eE89A25021903B01AD840C7494dE2",
+      startBlock: 58760240,
     },
     VotingProposal: {
       abi: VotingProposalAbi,
-      chain: "scrollSepolia",
-      address: "0x96842cafd37F1F7bdE59ef2dA601320F396589F8",
-      startBlock: 10901872,
+      chain: "bscTestnet",
+      address: "0x0e6c055996E02b129B8b4d7cCE9210997e408c7E",
+      startBlock: 58760240,
     },
     ReputationSystem: {
       abi: ReputationSystemAbi,
-      chain: "scrollSepolia",
-      address: "0x9B7BE371a83179C21debAAFa7038e2210b9Dd08D",
-      startBlock: 10901872,
+      chain: "bscTestnet",
+      address: "0x8C0028B38c492A2F991dD805093C6712344D012F",
+      startBlock: 58760240,
     },
     IdentityRegistry: {
       abi: IdentityRegistryAbi,
-      chain: "scrollSepolia",
-      address: "0x4092F361c8186865923e7DD217900735f00cb566",
-      startBlock: 10901872,
+      chain: "bscTestnet",
+      address: "0x5EF386D8aF3b1709C4Ca0404A27E80B2d1206e38",
+      startBlock: 58760240,
     },
   },
   database: {
-    kind: "pglite",
-    directory: "./db",
+    kind: "postgres",
+    connectionString: process.env.DATABASE_URL,
   }
 });
