@@ -19,7 +19,7 @@ import {
 import { Hono } from "hono";
 import { eq, and, desc, sql, gte } from "drizzle-orm";
 import { graphql } from "ponder";
-import { serializeBigInts, getModelWithRelatedData } from "../utils";
+import { serializeBigInts, getModelWithRelatedData, getProposalWithRelatedData, getUserWithRelatedData, getReviewerWithProfileData, getVoteWithRelatedData } from "../utils";
 import { getIPFSData, getIPFSImageUrl } from "../utils/pinata";
 
 const app = new Hono();
@@ -49,18 +49,22 @@ app.get("/models", async (c) => {
   const limit = parseInt(c.req.query("limit") || "50");
   const offset = parseInt(c.req.query("offset") || "0");
   const status = c.req.query("status");
+  const excludeStatus = c.req.query("excludeStatus");
   const submitter = c.req.query("submitter");
   const includeRelated = c.req.query("includeRelated") === "true";
 
   const conditions = [];
   if (status !== undefined) conditions.push(eq(model.status, parseInt(status)));
+  if (excludeStatus !== undefined) conditions.push(sql`${model.status} != ${parseInt(excludeStatus)}`);
   if (submitter) conditions.push(eq(model.submitter, submitter as `0x${string}`));
   
-  const whereClause = and(...conditions);
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
   
-  const results = await db.select()
-    .from(model)
-    .where(whereClause)
+  const query = db.select().from(model);
+  if (whereClause) {
+    query.where(whereClause);
+  }
+  const results = await query
     .orderBy(desc(model.createdAt))
     .limit(limit)
     .offset(offset);
@@ -120,15 +124,26 @@ app.get("/models/:id/reviews", async (c) => {
 
   const reviewsWithUsers = await Promise.all(
     results.map(async (reviewData) => {
-      const reviewer = await db.select()
-        .from(identity)
-        .where(eq(identity.owner, reviewData.reviewer))
-        .limit(1);
+      const reviewer = await getReviewerWithProfileData(reviewData.reviewer, db, getIPFSData, getIPFSImageUrl);
+
+      let reviewMetadata: any = null;
+      try {
+        const reviewIpfsData = await getIPFSData(reviewData.ipfsHash);
+        if (reviewIpfsData && reviewIpfsData.data) {
+          reviewMetadata = reviewIpfsData.data as any;
+          
+          if (reviewMetadata && reviewMetadata.screenshotHash) {
+            reviewMetadata.screenshotUrl = await getIPFSImageUrl(reviewMetadata.screenshotHash);
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching review metadata for hash ${reviewData.ipfsHash}:`, error);
+      }
 
       return {
         id: reviewData.id,
-        reviewer: reviewer[0] || null,
-        ipfsHash: reviewData.ipfsHash,
+        reviewer,
+        metadata: reviewMetadata,
         reviewType: reviewData.reviewType,
         severity: reviewData.severity,
         timestamp: reviewData.timestamp,
@@ -168,15 +183,26 @@ app.get("/reviews", async (c) => {
 
   const reviewsWithUsers = await Promise.all(
     results.map(async (reviewData) => {
-      const reviewer = await db.select()
-        .from(identity)
-        .where(eq(identity.owner, reviewData.reviewer))
-        .limit(1);
+      const reviewer = await getReviewerWithProfileData(reviewData.reviewer, db, getIPFSData, getIPFSImageUrl);
+
+      let reviewMetadata: any = null;
+      try {
+        const reviewIpfsData = await getIPFSData(reviewData.ipfsHash);
+        if (reviewIpfsData && reviewIpfsData.data) {
+          reviewMetadata = reviewIpfsData.data as any;
+          
+          if (reviewMetadata && reviewMetadata.screenshotHash) {
+            reviewMetadata.screenshotUrl = await getIPFSImageUrl(reviewMetadata.screenshotHash);
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching review metadata for hash ${reviewData.ipfsHash}:`, error);
+      }
 
       return {
         id: reviewData.id,
-        reviewer: reviewer[0] || null,
-        ipfsHash: reviewData.ipfsHash,
+        reviewer,
+        metadata: reviewMetadata,
         reviewType: reviewData.reviewType,
         severity: reviewData.severity,
         timestamp: reviewData.timestamp,
@@ -199,6 +225,7 @@ app.get("/proposals", async (c) => {
   const status = c.req.query("status");
   const proposalType = c.req.query("proposalType");
   const executed = c.req.query("executed");
+  const includeRelated = c.req.query("includeRelated") === "true";
 
   const conditions = [];
   if (status !== undefined) conditions.push(eq(proposal.status, parseInt(status)));
@@ -214,14 +241,28 @@ app.get("/proposals", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  if (!includeRelated) {
+    return c.json({
+      proposals: serializeBigInts(results),
+      pagination: { limit, offset }
+    });
+  }
+
+  const proposalsWithRelated = await Promise.all(
+    results.map(async (proposalData) => {
+      return await getProposalWithRelatedData(proposalData, db, getIPFSData, getIPFSImageUrl);
+    })
+  );
+
   return c.json({
-    proposals: serializeBigInts(results),
+    proposals: serializeBigInts(proposalsWithRelated),
     pagination: { limit, offset }
   });
 });
 
 app.get("/proposals/:id", async (c) => {
   const proposalId = BigInt(c.req.param("id"));
+  const includeRelated = c.req.query("includeRelated") === "true";
 
   const proposalData = await db.select()
     .from(proposal)
@@ -232,35 +273,41 @@ app.get("/proposals/:id", async (c) => {
     return c.json({ error: "Proposal not found" }, 404);
   }
 
-  const votesData = await db.select()
-    .from(vote)
-    .where(eq(vote.proposalId, proposalId))
-    .orderBy(desc(vote.timestamp));
+  if (!includeRelated) {
+    const votesData = await db.select()
+      .from(vote)
+      .where(eq(vote.proposalId, proposalId))
+      .orderBy(desc(vote.timestamp));
 
-  const votes = await Promise.all(
-    votesData.map(async (voteData) => {
-      const voter = await db.select()
-        .from(identity)
-        .where(eq(identity.owner, voteData.voter))
-        .limit(1);
+    const votes = await Promise.all(
+      votesData.map(async (voteData) => {
+        const voter = await db.select()
+          .from(identity)
+          .where(eq(identity.owner, voteData.voter))
+          .limit(1);
 
-      return {
-        ...voteData,
-        voter: voter[0] || null
-      };
-    })
-  );
+        return {
+          ...voteData,
+          voter: voter[0] || null
+        };
+      })
+    );
 
-  const stats = await db.select()
-    .from(proposalStats)
-    .where(eq(proposalStats.id, proposalId))
-    .limit(1);
+    const stats = await db.select()
+      .from(proposalStats)
+      .where(eq(proposalStats.id, proposalId))
+      .limit(1);
 
-  return c.json({
-    proposal: serializeBigInts(proposalData[0]),
-    votes: serializeBigInts(votes),
-    stats: serializeBigInts(stats[0] || {})
-  });
+    return c.json({
+      proposal: serializeBigInts(proposalData[0]),
+      votes: serializeBigInts(votes),
+      stats: serializeBigInts(stats[0] || {})
+    });
+  }
+
+  const proposalWithRelated = await getProposalWithRelatedData(proposalData[0], db, getIPFSData, getIPFSImageUrl);
+
+  return c.json(serializeBigInts(proposalWithRelated));
 });
 
 app.get("/proposals/:id/votes", async (c) => {
@@ -281,14 +328,33 @@ app.get("/proposals/:id/votes", async (c) => {
 
   const votesWithUsers = await Promise.all(
     results.map(async (voteData) => {
-      const voter = await db.select()
+      const voterIdentity = await db.select()
         .from(identity)
         .where(eq(identity.owner, voteData.voter))
         .limit(1);
 
+      let voterProfile: any = null;
+      if (voterIdentity[0] && voterIdentity[0].uri) {
+        try {
+          const voterIpfsData = await getIPFSData(voterIdentity[0].uri);
+          if (voterIpfsData && voterIpfsData.data) {
+            voterProfile = voterIpfsData.data as any;
+            
+            if (voterProfile && voterProfile.profilePicture) {
+              voterProfile.profilePictureUrl = await getIPFSImageUrl(voterProfile.profilePicture);
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching voter profile for hash ${voterIdentity[0].uri}:`, error);
+        }
+      }
+
       return {
         ...voteData,
-        voter: voter[0] || null
+        voter: {
+          ...voterIdentity[0],
+          profile: voterProfile
+        }
       };
     })
   );
@@ -333,19 +399,24 @@ app.get("/users/:address", async (c) => {
     .where(eq(platformVerification.owner, address as `0x${string}`))
     .orderBy(desc(platformVerification.verifiedAt));
 
-  return c.json({
-    user: serializeBigInts(userData[0]),
-    stats: serializeBigInts(stats[0] || {}),
-    badges: serializeBigInts(badges),
-    identity: serializeBigInts(identityData[0] || {}),
-    verifications: serializeBigInts(verifications)
-  });
+  const userWithRelated = await getUserWithRelatedData(
+    userData[0]!,
+    stats[0] || {},
+    badges,
+    identityData[0] || null,
+    verifications,
+    getIPFSData,
+    getIPFSImageUrl
+  );
+
+  return c.json(serializeBigInts(userWithRelated));
 });
 
 app.get("/users/:address/models", async (c) => {
   const address = c.req.param("address");
   const limit = parseInt(c.req.query("limit") || "50");
   const offset = parseInt(c.req.query("offset") || "0");
+  const includeRelated = c.req.query("includeRelated") === "true";
 
   const results = await db.select()
     .from(model)
@@ -354,8 +425,21 @@ app.get("/users/:address/models", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  if (!includeRelated) {
+    return c.json({
+      models: serializeBigInts(results),
+      pagination: { limit, offset }
+    });
+  }
+
+  const modelsWithRelated = await Promise.all(
+    results.map(async (modelData) => {
+      return await getModelWithRelatedData(modelData, db, getIPFSData, getIPFSImageUrl);
+    })
+  );
+
   return c.json({
-    models: serializeBigInts(results),
+    models: serializeBigInts(modelsWithRelated),
     pagination: { limit, offset }
   });
 });
@@ -372,8 +456,89 @@ app.get("/users/:address/reviews", async (c) => {
     .limit(limit)
     .offset(offset);
 
+  const reviewsWithUsers = await Promise.all(
+    results.map(async (reviewData) => {
+      const reviewer = await getReviewerWithProfileData(reviewData.reviewer, db, getIPFSData, getIPFSImageUrl);
+
+      let reviewMetadata: any = null;
+      try {
+        const reviewIpfsData = await getIPFSData(reviewData.ipfsHash);
+        if (reviewIpfsData && reviewIpfsData.data) {
+          reviewMetadata = reviewIpfsData.data as any;
+          
+          if (reviewMetadata && reviewMetadata.screenshotHash) {
+            reviewMetadata.screenshotUrl = await getIPFSImageUrl(reviewMetadata.screenshotHash);
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching review metadata for hash ${reviewData.ipfsHash}:`, error);
+      }
+
+      const modelData = await db.select()
+        .from(model)
+        .where(eq(model.id, reviewData.modelId))
+        .limit(1);
+
+      let modelMetadata: any = null;
+      if (modelData[0] && modelData[0].ipfsHash) {
+        try {
+          const modelIpfsData = await getIPFSData(modelData[0].ipfsHash);
+          if (modelIpfsData && modelIpfsData.data) {
+            modelMetadata = modelIpfsData.data as any;
+            
+            if (modelMetadata && modelMetadata.imageHash) {
+              modelMetadata.imageUrl = await getIPFSImageUrl(modelMetadata.imageHash);
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching model metadata for hash ${modelData[0].ipfsHash}:`, error);
+        }
+      }
+
+      return {
+        id: reviewData.id,
+        reviewer,
+        model: modelData[0] ? {
+          id: modelData[0].id,
+          submitter: modelData[0].submitter,
+          status: modelData[0].status,
+          metadata: modelMetadata
+        } : null,
+        metadata: reviewMetadata,
+        reviewType: reviewData.reviewType,
+        severity: reviewData.severity,
+        timestamp: reviewData.timestamp,
+        createdAt: reviewData.createdAt
+      };
+    })
+  );
+
   return c.json({
-    reviews: serializeBigInts(results),
+    reviews: serializeBigInts(reviewsWithUsers),
+    pagination: { limit, offset }
+  });
+});
+
+app.get("/users/:address/votes", async (c) => {
+  const address = c.req.param("address");
+  const limit = parseInt(c.req.query("limit") || "50");
+  const offset = parseInt(c.req.query("offset") || "0");
+
+  const results = await db.select()
+    .from(vote)
+    .where(eq(vote.voter, address as `0x${string}`))
+    .orderBy(desc(vote.timestamp))
+    .limit(limit)
+    .offset(offset);
+
+  const votesWithRelated = await Promise.all(
+    results.map(async (voteData) => {
+      return await getVoteWithRelatedData(voteData, db, getIPFSData, getIPFSImageUrl);
+    })
+  );
+
+  return c.json({
+    votes: serializeBigInts(votesWithRelated),
     pagination: { limit, offset }
   });
 });
