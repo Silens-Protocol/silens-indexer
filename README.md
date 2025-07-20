@@ -1,6 +1,6 @@
 # Silens Indexer
 
-A blockchain indexer for the Silens protocol built with [Ponder](https://ponder.sh/). This indexer processes events from the Silens smart contracts on Scroll Sepolia and provides a GraphQL API and REST endpoints for querying indexed data.
+A blockchain indexer for the Silens protocol built with [Ponder](https://ponder.sh/). This indexer processes events from the Silens smart contracts on BSC Testnet and provides a GraphQL API and REST endpoints for querying indexed data.
 
 ## Overview
 
@@ -15,11 +15,11 @@ The Silens Indexer is responsible for:
 
 ### Smart Contracts Indexed
 
-- **SilensCore** (`0xd20b657d51174d1B374E43A9C1CB78875349BE09`)
-- **SilensModelRegistry** (`0x3200D5861a8bA6874e81f1B2A03661bBCA1e6665`)
-- **SilensProposalVoting** (`0x8660466fd7683A84cB163e78B73c37846477AC68`)
-- **SilensReputationSystem** (`0xAd6dFe534f3bE9221ceaE8bCD929CCa052D48a6B`)
-- **SilensIdentity** (`0x87BE019A88fC21e60902453b93f19cc41A81a46F`)
+- **Silens** (Main Orchestrator) (`0xCA18A11ca8e44c9eef603242Ef3cc92EE8BE12C2`)
+- **IdentityRegistry** (`0x5EF386D8aF3b1709C4Ca0404A27E80B2d1206e38`)
+- **ModelRegistry** (`0xEFEE9654334eE89A25021903B01AD840C7494dE2`)
+- **ReputationSystem** (`0x8C0028B38c492A2F991dD805093C6712344D012F`)
+- **VotingProposal** (`0x0e6c055996E02b129B8b4d7cCE9210997e408c7E`)
 
 ### Database Schema
 
@@ -81,7 +81,7 @@ The indexer maintains the following data models:
 
 - Node.js >= 18.14
 - PostgreSQL database
-- Access to Scroll Sepolia RPC endpoint
+- Access to BSC Testnet RPC endpoint
 
 ## Installation
 
@@ -105,10 +105,11 @@ The indexer maintains the following data models:
    DATABASE_URL=postgresql://username:password@host:port/database
    
    # Blockchain RPC
-   SCROLL_SEPOLIA_RPC_URL=https://sepolia-rpc.scroll.io
+   BSC_TESTNET_RPC_URL=https://data-seed-prebsc-1-s1.binance.org:8545/
    
    # Optional: API keys for enhanced RPC access
-   # SCROLL_SEPOLIA_RPC_URL=https://scroll-sepolia.infura.io/v3/YOUR_API_KEY
+   # BSC_TESTNET_RPC_URL=https://bsc-testnet.publicnode.com
+   # BSC_TESTNET_RPC_URL=https://bsc-testnet.public.blastapi.io
    ```
 
 ## Usage
@@ -118,7 +119,7 @@ The indexer maintains the following data models:
 Start the indexer in development mode with hot reloading:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 This will:
@@ -133,7 +134,7 @@ This will:
 
 The main configuration is in `ponder.config.ts`:
 
-- **Chains**: Configured for Scroll Sepolia testnet
+- **Chains**: Configured for BSC Testnet (Chain ID: 97)
 - **Contracts**: All Silens smart contract addresses and ABIs
 - **Database**: PostgreSQL connection settings
 - **Start Blocks**: Block numbers to begin indexing from
@@ -163,3 +164,16 @@ silens-indexer/
 ├── ponder.schema.ts        # Database schema
 └── package.json           # Dependencies and scripts
 ```
+## 🚀 Deployment
+
+#### **API Endpoints**
+- **GraphQL API**: Available at `/graphql` endpoint
+- **REST API**: Available at various endpoints (see API documentation above)
+- **Health Check**: `/health` endpoint for service status
+
+#### **Deployment Details**
+- **Indexing Engine**: Ponder
+- **Database**: PostgreSQL
+- **API Framework**: Hono
+- **IPFS Integration**: Pinata for metadata storage
+- **Real-time Processing**: Event-driven indexing with automatic retries
