@@ -8,6 +8,7 @@ The Silens Indexer is responsible for:
 
 - **Event Processing**: Indexing events from Silens smart contracts (Core, Model Registry, Proposal Voting, Reputation System, Identity)
 - **Data Storage**: Storing structured data in PostgreSQL database
+- **File Storage**: Managing IPFS storage via Pinata for metadata, images, and documents
 - **API Layer**: Providing GraphQL and REST APIs for frontend applications
 - **Real-time Updates**: Processing blockchain events in real-time as they occur
 
@@ -48,6 +49,13 @@ The indexer maintains the following data models:
 - Automatic database updates
 - Error handling and retry mechanisms
 
+### File Storage (IPFS/Pinata)
+- **Metadata Storage**: Model metadata, review evidence, user profiles
+- **Image Storage**: Model images, review screenshots, profile pictures
+- **Document Storage**: Identity verification documents
+- **IPFS Integration**: Automatic file upload and retrieval via Pinata
+- **Gateway Access**: Public IPFS gateway for frontend access
+
 ### API Endpoints
 
 #### GraphQL API
@@ -76,57 +84,6 @@ The indexer maintains the following data models:
 **Statistics**
 - `GET /stats/global` - Platform-wide statistics
 - `GET /stats/users` - User activity statistics
-
-## Prerequisites
-
-- Node.js >= 18.14
-- PostgreSQL database
-- Access to BSC Testnet RPC endpoint
-
-## Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd silens-indexer
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   pnpm install
-   ```
-
-3. **Environment Setup**
-   Create a `.env` file with the following variables:
-   ```env
-   # Database
-   DATABASE_URL=postgresql://username:password@host:port/database
-   
-   # Blockchain RPC
-   BSC_TESTNET_RPC_URL=https://data-seed-prebsc-1-s1.binance.org:8545/
-   
-   # Optional: API keys for enhanced RPC access
-   # BSC_TESTNET_RPC_URL=https://bsc-testnet.publicnode.com
-   # BSC_TESTNET_RPC_URL=https://bsc-testnet.public.blastapi.io
-   ```
-
-## Usage
-
-### Development Mode
-
-Start the indexer in development mode with hot reloading:
-
-```bash
-pnpm dev
-```
-
-This will:
-- Start the Ponder development server
-- Begin indexing from the configured start blocks
-- Start the GraphQL and REST API servers
-- Enable hot reloading for code changes
 
 ## Configuration
 
@@ -175,5 +132,5 @@ silens-indexer/
 - **Indexing Engine**: Ponder
 - **Database**: PostgreSQL
 - **API Framework**: Hono
-- **IPFS Integration**: Pinata for metadata storage
+- **File Storage**: IPFS via Pinata for metadata, images, and documents
 - **Real-time Processing**: Event-driven indexing with automatic retries
